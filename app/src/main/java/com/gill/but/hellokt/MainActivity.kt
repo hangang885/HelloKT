@@ -11,7 +11,7 @@ fun main(args: Array<String>){
     println(args[1])
     println(args[2])
     println(args[2])
-    println(args[3])
+    println(args[3])//핼로
     println(args[3])
     /*인자 없이 실행할 경우 에러가 난다*/
     /*Edit configuration 의 arguments 에 넣어주면 실행 된다*/
