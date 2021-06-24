@@ -101,3 +101,188 @@ fun main() {
     coco.fly() // 객체의 멤버 메서드의 사용
     coco.sing(3)
 }*/
+
+
+/*
+* 상속과 클래스의 계층
+*
+*   상속(inheritance)
+*       자식 클래스를 만들 때 상위 클래스(부모 클래스)의 속성과 기능을 물려 받아 계승
+*       상위(부모) 클래스의 프로퍼티와 메서드가 자식에 적용됨
+*
+*   open 키워드를 통한 선언
+*       open class 기반 클래스명{ // open 으로 파생 가능(다른 클래스가 상속 가능한 상태가 됨)
+*       ...
+*       }
+*       class 파생 클래스명 : 기반 클래스명(){ // 기반 클래스로부터 상속, 최종 클래스로 파생 불가
+*       ...
+*       }
+*           코틀린의 모든 클래스는 묵시적으로 Any 로부터 상속
+*
+* */
+
+/*
+
+open class Bird(var name: String, var wing: Int, var beak: String){
+
+
+
+    fun fly(){
+        println("Fly")
+    }
+}
+
+class Lark(name: String, wing: Int, beak: String): Bird(name, wing, beak){
+
+    fun singHitone(){
+        println("sing Hitone")
+    }
+}
+class Parrot: Bird {
+    var language: String
+    constructor(name: String, wing: Int, beak: String, language: String)
+    : super(name, wing, beak)
+    {
+        this.language = language
+
+    }
+
+    fun speak(){
+        println("Speak: $language")
+    }
+
+
+}
+
+fun main() {
+    val lark = Lark("mylack", 2, "Short")
+    val parrot = Parrot("myparrot",2,"long","English")
+
+    println("lark - name: ${lark.name}")
+    println("parrot - name: ${parrot.name}, lang: ${parrot.language}")
+
+    lark.singHitone()
+    lark.fly()
+
+    parrot.speak()
+    parrot.fly()
+}
+*/
+
+/*
+*
+* 다형성
+*   다형성(polymorphism)이란
+*       같은 이름을 사용하지만 구현 내용이 다르거나 매개변수가 달라서 하나의
+*       이름으로 다양한 기능을 수행할 수 있는 개념
+*
+*   Static Polymorphism
+*       컴파일 타임에 결정되는 다형성
+*       단순하게 보면 메서드 오버로딩(overloading)을 사용할 때
+*
+*   Dynamic Polymorphism
+*       런타임 다형성
+*       동적으로 구성되는 오버라이딩(overriding)된 메서드를 사용할 때
+*
+*   오버라이딩(overriding)
+*       기능을 완전히 다르게 바꾸어 재설계
+*       누르다 -> 행위 -> push()
+*       push()는 '확인' 혹은 '취소' 용도로 서로 다른 기능을 수행할 수 있음
+*
+*   오버로딩(overloading)
+*       기능은 같지만 인자를 다르게 하여 여러 경우를 처리
+*       출력한다 -> 행위 -> print()
+*       print(123), print("Hello) 인자는 다르지만 출력의 기능은 동일함
+*
+* 오버로딩의 예
+*   일반 함수에서의 오버로딩
+*       fun add( x: Int, y: Int): Int { //정수 자료형 매개변수 2개를 더함
+*           return x+y
+*       }
+*
+*       fun add( x: Double, y: Double):Double{ // 실수 자료형 매개변수 2개를 더함
+*           return x + y
+*       }
+*
+*       fun add(x: Int, y: Int, z:Int): Int{ //정수 자료형 매개변수 3개를 더함
+*           return x + y + z
+*       }
+*
+*
+* */
+/*
+
+
+open class Bird(var name: String, var wing: Int, var beak: String){
+
+
+
+    open fun fly(){
+        println("Fly")
+    }
+}
+
+class Lark(name: String, wing: Int, beak: String): Bird(name, wing, beak){
+
+    override fun fly(){
+        println("Quick Fly")
+    }
+
+    fun singHitone(){
+        println("sing Hitone")
+    }
+}
+class Parrot: Bird {
+    var language: String
+    constructor(name: String, wing: Int, beak: String, language: String)
+            : super(name, wing, beak)
+    {
+        this.language = language
+
+    }
+
+    override fun fly(){
+        println("Slow Fly")
+    }
+
+    fun speak(){
+        println("Speak: $language")
+    }
+
+
+}
+
+fun main() {
+    val lark: Bird= Lark("mylack", 2, "Short")
+    val parrot: Bird = Parrot("myparrot",2,"long","English")
+
+    println("lark - name: ${lark.name}")
+//    println("parrot - name: ${parrot.name}, lang: ${parrot.language}")
+
+//    lark.singHitone()
+    lark.fly()
+
+//    parrot.speak()
+    parrot.fly()
+}
+*/
+/*
+* 오버라이딩의 예
+*   메서드 오버라이딩의 예
+*       open class Bird{ // 여기에 open 은 상속 가능을 나타냄
+*
+*       fun fly() {...} // 최종 메서드로 오버라이딩 불가
+*       open fun sing() {...} // sing() 메서드는 하위 클래스에서 오버라이딩 가능
+* }
+*   class Lark():Bird() { // 하위 클래스
+*       fun fly() { /* 재정의 */ } // 에러! 상위 메서드에 open 키워드가 없어 오버라이딩 불가
+        override fun sing() { /* 구현부를 새롭게 재정의 */ } // 구현부를 새롭게 작성
+        }
+
+  오버라이딩 금지
+    파생 클래스에서 오버라이딩 금지할 때
+        open class Lark() : Bird{
+            final override fun sing() { 구현부를 새롭게 재정의} // 하위 클래스에서 재정의 금지
+             }
+
+ */
