@@ -122,54 +122,6 @@ fun main() {
 * */
 
 /*
-
-open class Bird(var name: String, var wing: Int, var beak: String){
-
-
-
-    fun fly(){
-        println("Fly")
-    }
-}
-
-class Lark(name: String, wing: Int, beak: String): Bird(name, wing, beak){
-
-    fun singHitone(){
-        println("sing Hitone")
-    }
-}
-class Parrot: Bird {
-    var language: String
-    constructor(name: String, wing: Int, beak: String, language: String)
-    : super(name, wing, beak)
-    {
-        this.language = language
-
-    }
-
-    fun speak(){
-        println("Speak: $language")
-    }
-
-
-}
-
-fun main() {
-    val lark = Lark("mylack", 2, "Short")
-    val parrot = Parrot("myparrot",2,"long","English")
-
-    println("lark - name: ${lark.name}")
-    println("parrot - name: ${parrot.name}, lang: ${parrot.language}")
-
-    lark.singHitone()
-    lark.fly()
-
-    parrot.speak()
-    parrot.fly()
-}
-*/
-
-/*
 *
 * 다형성
 *   다형성(polymorphism)이란
@@ -267,6 +219,119 @@ fun main() {
 }
 */
 /*
+* super 와 this
+*   현재 클래스에서 참조의 기능
+*       상위 클래스는 super 키워드로 현재 클래스는 this 키워드로 참조가 가능
+*           super                                        this
+*           super.프로퍼티명 // 상위 클래스의 프로퍼티 참조  this.프로퍼티명 // 현재 클래스의 프로퍼티 참조
+*           super.메서드명() // 상위 클래스의 메서드 참조   this.메서드명() // 현재 클래스의 메서드 참조
+*           super() // 상위 클래스의 생성자의 참조         this() // 현재 클래스의 생성자의 참조
+*
+* */
+/*
+open class Bird(var name: String, var wing: Int, var beak: String){
+
+
+
+    open fun fly(){
+        println("Fly")
+    }
+}
+
+class Lark(name: String, wing: Int, beak: String): Bird(name, wing, beak){
+
+    override fun fly(){
+        println("Quick Fly")
+    }
+
+    fun singHitone(){
+        println("sing Hitone")
+    }
+}
+class Parrot: Bird {
+    var language: String
+    constructor(name: String, wing: Int, beak: String, language: String)
+            : super(name, wing, beak)
+    {
+        this.language = language
+
+    }
+
+    override fun fly(){
+        println("Slow Fly")
+        super.fly()
+    }
+
+    fun speak(){
+        println("Speak: $language")
+    }
+
+
+}
+
+fun main() {
+    val lark: Bird = Lark("mylack", 2, "Short")
+    val parrot: Bird = Parrot("myparrot", 2, "long", "English")
+
+    println("lark - name: ${lark.name}")
+//    println("parrot - name: ${parrot.name}, lang: ${parrot.language}")
+
+//    lark.singHitone()
+    lark.fly()
+}
+*/
+
+/*
+
+open class Bird(var name: String, var wing: Int, var beak: String){
+
+
+
+    fun fly(){
+        println("Fly")
+    }
+}
+
+class Lark(name: String, wing: Int, beak: String): Bird(name, wing, beak){
+
+    fun singHitone(){
+        println("sing Hitone")
+    }
+}
+class Parrot: Bird {
+    var language: String
+    constructor(name: String, wing: Int, beak: String, language: String)
+    : super(name, wing, beak)
+    {
+        this.language = language
+
+    }
+
+    fun speak(){
+        println("Speak: $language")
+    }
+
+
+}
+
+fun main() {
+    val lark = Lark("mylack", 2, "Short")
+    val parrot = Parrot("myparrot",2,"long","English")
+
+    println("lark - name: ${lark.name}")
+    println("parrot - name: ${parrot.name}, lang: ${parrot.language}")
+
+    lark.singHitone()
+    lark.fly()
+
+    parrot.speak()
+    parrot.fly()
+}
+*/
+
+
+
+/*
 * 오버라이딩의 예
 *   메서드 오버라이딩의 예
 *       open class Bird{ // 여기에 open 은 상속 가능을 나타냄
@@ -286,3 +351,107 @@ fun main() {
              }
 
  */
+
+/*
+open class Person{
+    constructor(firstName: String){
+        println("[Person] firstName: $firstName")
+    }
+    constructor(firstName: String, age: Int){
+        println("[Person] firstName: $firstName, $age")
+    }
+}
+class Developer: Person{
+    constructor(firstName: String): this(firstName, 10){
+        // 10을 디폴트 값으로 하단에 있는 생성자를 참조한다.
+        println("[Developer] $firstName")
+    }
+    constructor(firstName: String,age:Int): super(firstName, age){
+        // 부모 클래스에 두번째 생성자를 참조한다다        println("[Developer] $firstName, $age")
+    }
+
+}
+
+fun main() {
+    val sean = Developer("Sean")
+
+}
+*/
+
+/*
+open class Person(firstName: String, out: Unit = println("[Primary Constructor] Parameter")){
+    val fName = println("[Property] Person fName: $firstName")
+    init {
+        println("[init] Person init block")
+    }
+    constructor(firstName: String, age: Int,
+        out: Unit= println("[Secondary Constructor] Parameter"))
+        : this (firstName){
+        println("[Secondary Constructor] Body: $firstName, $age")
+    }
+}
+
+
+fun main() {
+    val p1 = Person("Gang", 23)
+    println()
+    val p2 = Person("Hang")
+
+}*/
+
+/*
+* 바깥 클래스 호출하기
+*   엣(@) 기호의 이용
+*       이너 클래스에서 바깥 클래스의 상위 클래스를 호출하려면 super 키워드와
+*       함께 엣(@) 기호 옆에 바깥 클래스명을 작성해 호출*/
+/*
+
+open class Base{
+    open val x: Int = 1
+    open fun f() = println("Base Class f()")
+}
+class Child: Base(){
+    override val x: Int = super.x + 1
+    override fun f() = println("Child Class f()")
+
+    inner class Inside{
+        fun f() = println("Inside Class f()")
+        fun test(){
+            f() // 1. 현재 이너 클래스의 f() 접근
+            Child().f() // 2. 바로 바깥 클래스의 f()의 접근
+            super@Child.f() // 3. Child 의 상위 클래스인 Bass 클래스의 f() 접근
+            println("[Inside] super@Child.x: ${super@Child.x}") // Base 의 x 접근
+        }
+    }
+}
+
+fun main() {
+    val c1 = Child()
+    c1.Inside().test() // 이너 클래스 Inside 의 메서드 test() 실행
+}*/
+
+open class A{
+    open fun f() = println("A Class f()")
+    fun a() = println("A Class a()")
+}
+interface B {
+    fun f() = println("B Interface f()") // 인터페이스는 기본적으로 open임
+    fun b() = println("B Interface b()")
+}
+class C: A(), B{// 1. 콤마(,) 를 사용해 클래스와 인터페이스를 지정
+    //컴파일 되려면 f() 가 오버라이딩되어야함
+    override fun f() = println("C Class f()")
+    fun test(){
+        f() // 2. 현재 클래스의 f()
+        b() // 3. 인터페이스의 B 의 b()
+        super<A>.f() // 4. A 클래스의 f()
+        super<B>.f() // 4. B 클래스의 f()
+
+    }
+
+}
+
+fun main() {
+    val c = C()
+    c.test()
+}
