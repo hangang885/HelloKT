@@ -8,7 +8,7 @@ package com.gill.but.hellokt
 *       private : 이 지시자가 붙은 요소는 외부에서 접근할 수 없음
 *       public : 이 요소는 어디서든 접근이 가능(기본값)
 *       protected :  외부에서 접근할 수 없으나 하위 상속 요소에서는 가능
-*       internal : 같은 정의의 모듈 내부에서는 접근이 가능
+*       internal : 같은 정의의 모듈(패키지) 내부에서는 접근이 가능
 *
 *   가시성 지시자의 선언 위치
 *       [가시성 지시자] <val | var> 전역 변수명
@@ -45,6 +45,7 @@ fun main() {
 fun topFunction(){
     val pc = PrivateTest()
 }*/
+/*
 
 open class Base{
     protected var i = 2
@@ -75,4 +76,30 @@ fun main() {
     base.access()
     val derived = Derived()
     derived.derivedFunc()
+}*/
+
+open class Base{
+    // 이 클래스에서는 a, b, c, d, e 접근 가능
+    private val a =1
+    protected open val b = 2
+    internal val c = 3
+    val d = 4 // 가시성 지시자 기본 값은 public
+
+    protected class Nested {
+        // 이 클래스에서는 a, b, c, d, e, f 접근 가능
+        public val e: Int = 5 // public 생략 가능
+        private val f: Int = 6
+    }
+}
+
+class Derived: Base(){
+    // 이 클래스에서는 b, c, d, e 접근 가능
+    // a 는 접근 불가
+    override val b = 5 // Base 의 'b' 는 오버라이딩 됨 - 상위와 같은 protected 지시자
+}
+
+class Other(base: Base){
+    //base.a , base.b 는 접근 불가
+    //base.c 와 base.d 는 접근 가능( 같은 모듈 안에 있으므로)
+    //Base.Nested 는 접근 불가 Nested::e 역시 접근 불가
 }
