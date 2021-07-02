@@ -88,6 +88,7 @@ fun main() {
     val test = LazyTest()//(1)
     test.flow()// (3)
 }*/
+/*
 
 class Person(val name: String, val age: Int)
 
@@ -110,6 +111,7 @@ fun main(){
     println("personDelegate Init : ${personDelegate.isInitialized()}")
 
 }
+*/
 
 /*
 * by lazy 의 모드
@@ -124,3 +126,126 @@ fun main(){
 *       }
 *
 * */
+
+
+/*
+* by를 이용한 위임
+*   위임(delegation)
+*       하나의 클래스가 다른 클래스에 위임하도록 선언
+*       위임된 클래스가 가지는 멤버를 참조없이 호출
+*           <val | var | class> 프로퍼티 혹은 클래스 이름: 자료형 by 위임자
+*
+* 클래스의 위임
+*   다른 클래스의 멤버를 사용하도록 위임
+*       interface Animal {
+*           fun eat() {...}
+*           ...
+*       }
+*       class Cat : Animal{}
+*       val cat = Cat()
+*       class Robot : Animal by cat // Animal 의 정의된 Cat 의 모든 멤버를 Robot 에 위임함
+*
+*       cat 은 Animal 자료형의 private 멤버로 Robot 클래스 내에 저장
+*       Cat 에서 구현된 모든 Animal 의 메소드는 정적 메소드로 생성
+*       따라서, Animal 에 대한 명시적인 참조를 사용하지 않고도 eat() 을 바로 호출
+*
+* 위임을 사용하는 이유?
+*   코틀린의 기본 라이브러리는 open 되지 않은 최종 클래스
+*       표준 라이브러리의 무분별한 상속의 복잡한 문제들을 방지
+*       단, 상속이나 직접 클래스의 기능 확장을 하기 어렵다
+*   위임을 사용하면?
+*       위임을 통해 상속과 비슷하게 최종 클래스의 모든 기능을 사용하면서
+*       동시에 기능을 추가 확장 구현할 수 있다.
+* *//*
+interface Car1 {
+    fun go(): String
+}
+class VanImpl(val power: String): Car1{
+    override fun go() = "는 짐을 적재하며 $power 마력을 가집니다."
+}
+class SportImpl(val power: String): Car1{
+    override fun go() = "는 경주용에 사용되며 $power 마력을 가집니다."
+}
+*//*class CarModel(val model: String, impl: Car1): Car1 by impl{
+    fun CarInfo(){
+        println("$model ${go()}") // 참조 없이 각 인터페이스 구현 클래스의 go를 접근
+    }
+}*//*
+class CarModel(val model: String, private val impl: Car1): Car1{
+    fun CarInfo(){
+        println("$model ${impl.go()}") // 참조 없이 각 인터페이스 구현 클래스의 go를 접근
+    }
+
+    override fun go(): String {
+        return "TEST"
+    }
+}
+fun main(){
+    val myDamas = CarModel("Damas 2010", VanImpl("100마력"))
+    val my350z = CarModel("350z 2008", SportImpl("350마력"))
+
+    myDamas.CarInfo() //CarInfo 에 대한 다형성을 나타냄
+    my350z.CarInfo()
+}*/
+/*
+* 프로퍼티 위임과 by lazy 다시 보기
+*   by lazy {...} 도 위임
+*       사용된 프로퍼티는 람다식 함수에 전달되어(위임되어) 함수에 의해 사용
+*
+*   동작 분석
+*       1. lazy 람다식 함수는 람다를 전달받아 저장한 Lazy<T> 인스턴스를 반환한다
+*       2. 최조 프로퍼티의 게터 실행은 lazy 에 넘겨진 람다식 함수를 실행하고 결과를 기록한다
+*       3. 이후 프로퍼티의 게터 실행은 이미 초기화되어 기록된 값을 반환한다.
+*
+* observable 과 vetoable 의 위임
+*   observable
+*       프로퍼티를 감시하고 있다가 특정 코드의 로직에서 변경이 일어날 때 호출
+*
+*   vetoable
+*       감시보다는 수여한다는 의미로 반환값에 따라 프로퍼티 변경을 허용하거나 취소
+*
+*
+* */
+
+import kotlin.properties.Delegates
+/*  observable 의 간단한 사용의 예
+class User{
+    //observable 은 값의 변화를 감시하는 일종의 콜백 루딘
+    var name: String by Delegates.observable("NONAME"){// 1. 프로퍼티를 위임
+        prop, old, new -> // 2. 람다식 매개변수로 프로퍼티, 기존값, 새로운 값
+        println("$old -> $new") // 3. 이 부분은 이벤트가 발생할 때만 실행됨
+    }
+}
+
+fun main() {
+    val user = User()
+    user.name = "Gang" // 4. 값이 변경되는 시점에서 첫 이벤트 발생
+    user.name = "Kang" // 5. 값이 변경되는 시점에서 두번째 이벤트 발생
+}*/
+
+// vetoable 을 사용한 최대값
+fun main() {
+    var max: Int by Delegates.vetoable(0){ // 1. 초기값은 0
+        prop, old, new ->
+        new > old // 2. 조건에 맞지 않으면 거부권 행사
+    }
+
+    var min: Int by Delegates.vetoable(0){
+        prop, old, new ->
+        new < old
+    }
+    println(max) // 0
+    max = 10
+    println(max) // 10
+
+    //여기서 기존값이 새 값보다 크므로 false
+    //따라서 5를 재 할당하지 않는다
+    max = 5
+    println(max)// 10
+
+    println(min)
+    min = -1
+    println(min)
+    min = 0
+    println(min)
+}
