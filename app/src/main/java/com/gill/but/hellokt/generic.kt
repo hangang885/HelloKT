@@ -213,5 +213,95 @@ fun main(args: Array<String>) {
 *       val integer: Int = 1;
 *       val nullableInteger: Int? = integer;
 *
+* 가변성의 3가지 유형
+*   3가지 유형
+*       용어                          의미
+*       공변성(covariance)             T'가 T의 하위 자료형이면, C<T'>는 C<T>의 하위 자료형이다 생산자 입장의 out 성질
+*       반공변성(contravariance)        T'가 T의 하위 자료형이면, C<T>는 C<T'>의 하위 자료형이다.
+*       무변성(invariance)             C<T>와 C<T'>는 아무 관계 없다. 생산자 + 소비자
 *
+* 무변성(invariance)
+*   자료형 사이의 하위 자료형 관계가 성립하지 않음
+*   코틀린에서는 따로 지정해 주지 않으면 기본적으로 무변성
+*       // 무변성(Invariance) 선언
+*       class Box<T>(val size: Int)
+*
+*       fun main(args: Array<String>) {
+*           val anys: Box<Any> = Box<Int>(10) // 자료형 불일치 오류!
+*           val nothings: Box<Nothing> = Box<Int>(20) // 자료형 불일치 오류!
+*       }
+* 공변성(covariance)
+*   형식 매개변수 사이의 하위 자료형 관계가 성릭
+*   하위 자료형 관계가 그대로 인스턴스 자료형 사이의 관계로 이어지는 경우
+*   out 키워드를 사용해 정의
+*       // 공변성(Covariance) 선언
+*   class Box<out T>(val size: Int)
+*
+*   fun main(args: Array<String>){
+*       val anys: Box<Any> = Box<Int>(10) // 관계 성립으로 객체 생성 가능
+*       val nothings: Box<Nothing> = Box<Int>(20)// 오류 ! 자료형 불일치
+*       println(anys.size)
+*   }
+*
+* 반공변성(Contravariance)
+*   자료형의 상하 관계가 반대
+*   하위 클래스의 자료형을 상위 클래스의 자료형이 허용
+*   // 반 공변성(Contravariance) 선언
+*   class Box<in T>(val size: Int)
+*
+*   fun main(args: Array<String>){
+*       //val anys: Box<Any> = Box<Int>(10) // 오류 자료형 불일치
+*       val nothings: Box<Nothing> = Box<Int>(20) // 관계 성립으로 객체 생성 가능
+*       println(nothings.size)
+*   }
 * */
+
+open class Animal(val size: Int){
+    fun feed() = println("Feeding..")
+}
+class Cat(val jump: Int): Animal(50)
+
+class Spider(val poison: Boolean): Animal(1)
+/*
+//1. 형식 매개변수를 Animal 로 제한
+class Box<out T: Animal>(val element: T) { // 주 생성자에서 val 만 허용
+    fun getAnimal(): T = element // 2. out은 반환자료형에만 사용할 수 있음
+//    fun set(new: T){ 3. 오류 ! T는 in 위치에 사용할 수 없음
+//    element = new
+//    }
+}*/
+
+class Box<out T: Animal>(val element: T){
+    fun getAnimal(): T = element
+
+}
+
+fun main() {
+
+    //일반적인 객체 선언
+    val c1 = Cat(10)
+    val s1 = Spider(true)
+    
+    //클래스의 상위 자료형 변환은 아무런 문제 없음
+    var a1: Animal = c1
+    a1 = s1 // a1은 Spider의 객체가 됨
+    println("s1 ${a1.size} ${a1.poison}")
+
+/*//    val b1: Box<Cat> = Box<Animal>()
+    val b2: Box<Animal>  = Box<Cat>()
+    val b3 = Box<Spider>()
+//    val b4: Box<Number> = Box<Int>()*/
+    
+    // 공변성 - Cat 은 Animal 의 하위 자료형
+    val c2: Box<Animal> = Box<Cat>(Cat(10))
+    println("c2.element.size = ${c2.element.size}")
+    
+    // 반대의 경우는 가능하지 않음
+    // val c3: Box<Cat> = Box<Animal>(10) 오류
+    
+    // 자료형이 제한되 Animal 과 하위 클래스 이외에는 사용할 수 없음
+    // val c4: Box<Any> = Box<Int>(10) 오류
+    
+
+}
+
