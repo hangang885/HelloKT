@@ -255,53 +255,81 @@ fun main(args: Array<String>) {
 *       println(nothings.size)
 *   }
 * */
+//
+//open class Animal(val size: Int){
+//    fun feed() = println("Feeding..")
+//}
+//class Cat(val jump: Int): Animal(50)
+//
+//class Spider(val poison: Boolean): Animal(1)*/
+//
+////1. 형식 매개변수를 Animal 로 제한
+//class Box<out T: Animal>(val element: T) { // 주 생성자에서 val 만 허용
+//    fun getAnimal(): T = element // 2. out은 반환자료형에만 사용할 수 있음
+////    fun set(new: T){ 3. 오류 ! T는 in 위치에 사용할 수 없음
+////    element = new
+////    }
+//}
+//
+//class Box<out T: Animal>(val element: T){
+//    fun getAnimal(): T = element
+//
+//}
+//
+//fun main() {
+//
+//    //일반적인 객체 선언
+//    val c1 = Cat(10)
+//    val s1 = Spider(true)
+//
+//    //클래스의 상위 자료형 변환은 아무런 문제 없음
+//    var a1: Animal = c1
+//    a1 = s1 // a1은 Spider의 객체가 됨
+//    println("s1 ${a1.size} ${a1.poison}")
+//    val b1: Box<Cat> = Box<Animal>()
+//    val b2: Box<Animal>  = Box<Cat>()
+//    val b3 = Box<Spider>()
+////    val b4: Box<Number> = Box<Int>()*//*
+//
+//    // 공변성 - Cat 은 Animal 의 하위 자료형
+//    val c2: Box<Animal> = Box<Cat>(Cat(10))
+//    println("c2.element.size = ${c2.element.size}")
+//
+//    // 반대의 경우는 가능하지 않음
+//    // val c3: Box<Cat> = Box<Animal>(10) 오류
+//
+//    // 자료형이 제한되 Animal 과 하위 클래스 이외에는 사용할 수 없음
+//    // val c4: Box<Any> = Box<Int>(10) 오류
+//
+//
+//}
 
-open class Animal(val size: Int){
-    fun feed() = println("Feeding..")
-}
-class Cat(val jump: Int): Animal(50)
-
-class Spider(val poison: Boolean): Animal(1)
 /*
-//1. 형식 매개변수를 Animal 로 제한
-class Box<out T: Animal>(val element: T) { // 주 생성자에서 val 만 허용
-    fun getAnimal(): T = element // 2. out은 반환자료형에만 사용할 수 있음
-//    fun set(new: T){ 3. 오류 ! T는 in 위치에 사용할 수 없음
-//    element = new
-//    }
-}*/
-
-class Box<out T: Animal>(val element: T){
-    fun getAnimal(): T = element
-
-}
-
-fun main() {
-
-    //일반적인 객체 선언
-    val c1 = Cat(10)
-    val s1 = Spider(true)
-    
-    //클래스의 상위 자료형 변환은 아무런 문제 없음
-    var a1: Animal = c1
-    a1 = s1 // a1은 Spider의 객체가 됨
-    println("s1 ${a1.size} ${a1.poison}")
-
-/*//    val b1: Box<Cat> = Box<Animal>()
-    val b2: Box<Animal>  = Box<Cat>()
-    val b3 = Box<Spider>()
-//    val b4: Box<Number> = Box<Int>()*/
-    
-    // 공변성 - Cat 은 Animal 의 하위 자료형
-    val c2: Box<Animal> = Box<Cat>(Cat(10))
-    println("c2.element.size = ${c2.element.size}")
-    
-    // 반대의 경우는 가능하지 않음
-    // val c3: Box<Cat> = Box<Animal>(10) 오류
-    
-    // 자료형이 제한되 Animal 과 하위 클래스 이외에는 사용할 수 없음
-    // val c4: Box<Any> = Box<Int>(10) 오류
-    
-
-}
-
+* 자료형 프로젝션
+*   선언 지점 변성(declaration-site variance)
+*       클래스 자체에 가변성을 지정하는 방식으로 클래스에 in/out 을 지정할 수 있다.
+*       선언하면서 지정하면 클래스의 공변성을 전체적으로 지정하는 것
+*           -클래스를 사용하는 장소에서는 따로 자료형을 지정해 줄 필요가 없음
+*       class Box<in T: Animal>(var item: T)
+*
+*   사용 지점 변성(use-site variance)
+*       메서드 매개변수에서 또는 제네릭 클래스를 생성할 대와 같이
+*       사용 위치에서 가변성을 지정하는 방식
+*       예) class Box<T>(var item: T)
+*           Box 의 사용시점에서 box 의 item 을 얻느냐(get) 설정하느냐(set) 에 따라 out / in 결정
+*       fun <T> printObj(box: Box<out Animal>) {
+*           val obj: Animal = box.item // item 의 값을 얻음(get)
+*           println(obj)
+*       }
+*           자료형 프로젝션을 통해 자료의 안정성을 보장
+*
+* 스타 프로젝션
+*   in/out 을 정하지 않고 추후에 결정
+*       어떤 자료형이라도 들어올 수 있으나 구체적으로 자료형이 결정되고 난 후에는 그 자료형과
+*       하위 자료형의 요소만 담을 수 있도록 제한
+*
+*       Foo<out T: TUpper>
+*           Foo<*>는 Foo<out TUpper> 와 동일
+*       Foo<in T>
+            Foo<*>는 Foo<in Nothing> 와 동일
+* */
