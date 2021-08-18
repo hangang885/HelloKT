@@ -333,3 +333,78 @@ fun main(args: Array<String>) {
 *       Foo<in T>
             Foo<*>는 Foo<in Nothing> 와 동일
 * */
+/*
+
+class InOutTest<in T, out U>(t: T, u: U){
+//    val propT: T = t // 오류! T는 in 위치기 때문에, out 위치에 사용 불가
+    val propU: U = u // U는 out 위치로 가능
+
+//    fun func1(u: U)// 오류! U는 out 위치기 때문에 in 위치에 사용 불가
+    fun fuc2(t: T){ // T는 in 위치에 사용됨
+        print(t)
+    }
+
+}
+
+fun starTestFunc(v: InOutTest<*,*>){
+//    v.func2() // 오류: Nothing 으로 인자를 처리함
+    print(v.propU)
+    //in 으로 정의되어 있는 형식 매개변수를 *로 받으면 in Nothing 인 것으로 간주
+    //out 으로 정의되어 있는 형식 매개변수를 *로 받으면 out Any? 인 것으로 간주
+}
+*/
+
+/*
+* 프로젝션 정리
+*   종류          예               가변성                 제한
+*   out 프로젝션   Box<out Cat>     공변성                 형식 매개변수는 세터를 통해 값을 설정하는 것이 제한됨
+*   in 프로젝션    Box<in Cat>      반공변성                형식 매개변수는 게터를 통해 값을 읽거나 반환 가능
+*   스타 프로젝션   Box<*>           모든 인스턴스는 하위타입   in 과 out 은 사용 방법에 따라 결정됨
+*                                  될 수 있음
+*
+* reified 자료형
+*   reified 자료형이 필요한 이유
+*       fun<T> myGenericFun(c: Class<T>)
+*           T 자료형은 실행 시간에 삭제
+*           컴파일 시간에는 접근 가능하나 함수 내부에서 사용하려면 위의 코드에서 함수의 매개변수를 넣어
+*           c: Class<T> 처럼 지정해야만 실행 시간에 사라지지 않고 접근
+*
+*       inline fun <reified T> myGenericFun()
+*           reified 로 형식 매개변수 T를 지정하면 실행 시간에 접근 가능
+*           reified 자료형은 inline 함수에서만 사용할 수 있다.
+*               컴파일러가 복사해 넣을 때 실제 자료형을 알 수 있기 때문에 실행 시간에도 사용할 수 있게됨
+*
+* Class<T> 와 KClass
+*   Class<T>
+*       .class 형태로 반환받는 객체
+*       Class 라는 클래스는 원본 클래스에 대한 많은 메타 데이터를 가짐
+*           패키지 이름이나 메서드, 필드, 구현된 인터페이스, 각종 검사 변수 등
+*
+*   Object::class
+*       코틀린의 표현 방법으로 KClass 를 나타냄
+*
+*   자바의 클래스를 가져오려면 .java 사용
+*       Object::class // KClass
+*       Object::class.java //Class
+*
+*
+*
+* */
+
+/*
+fun main() {
+    val result = getType<Int>(10)
+    println("result = $result")
+}
+inline fun <reified T>getType(value: Int):T {
+    println(T::class)//실행 시간에 삭제되지 않고 사용 가능
+    println(T::class.java)
+
+    return when(T::class){ // 받아들인 제네릭 자료형에 따라 반환
+        Float::class -> value.toFloat() as T
+        Int::class -> value as T
+        else -> throw IllegalStateException("${T::class} is not supported!")
+
+
+    }
+}*/
