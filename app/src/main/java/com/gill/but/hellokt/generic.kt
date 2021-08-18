@@ -11,14 +11,14 @@ package com.gill.but.hellokt
 * */
 /*
 
-class Box<T>(a: T){
+class box<t>(a: t){
     var name = a
 
 }
 
 fun main() {
-    val box1: Box<Int> = Box<Int>(1)
-    val box2: Box<String> = Box<String>("kang")
+    val box1: box<int> = box<int>(1)
+    val box2: box<string> = box<string>("kang")
 
     println(box1.name)
     println(box2.name)
@@ -391,7 +391,7 @@ fun starTestFunc(v: InOutTest<*,*>){
 *
 * */
 
-/*
+
 fun main() {
     val result = getType<Int>(10)
     println("result = $result")
@@ -407,4 +407,4 @@ inline fun <reified T>getType(value: Int):T {
 
 
     }
-}*/
+}
