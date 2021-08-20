@@ -190,14 +190,14 @@ fun main() {
 *   메서드 체이닝(chaining)해 연속해서 쓴다면 하나의 구문이 끝날 때마다 중간 결과로
 *   새로운 List 를 계속해서 만들어 낸다.
 *
-*
+*-
 * asSequence()
 *   중간 연산 결과 없이 한 번에 끝까지 연산한 후 결과를 반환
 *       filter 나 map 을 메서드 체이닝해서 사용할 경우 순차적 연산이기 때문에 시간이 많이 걸릴
 *       수 있지만 asSequence()를 사용하면 병렬 처리되기 때문에 처리 성능이 좋아짐
 *
 * */
-
+/*
 fun main() {
     //단순 메서드 체이닝을 사용할 때
     val list1 = listOf(1, 2, 3, 4, 5)
@@ -205,9 +205,12 @@ fun main() {
         .map { print("map($it)"); it * it } // 1번
         .filter { println("filter($it)"); it % 2 == 0 } // 2번
         .toList() // 3번
-    println(listDefault)
+    println(listDefault)}*/
 /*
 * 3번 과정에 의해 최종 결과를 List 목록으로 반환할 때, 모든연산이 수행되고 결과물이 새로운 리스트인
 * ListSeq 에 지정
 * 요소의 개수가 많을 때 속도나 메모리 측면에서 훨씬 좋은 성능을 낼 수 있다.*/
-}
+
+/*
+*
+* */
